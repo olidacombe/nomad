@@ -5,6 +5,9 @@ import { test } from 'qunit';
 import { task } from 'ember-concurrency';
 import sinon from 'sinon';
 
+// Used in Array#reduce to sum by a property common to an array of objects
+const sumBy = prop => (sum, obj) => (sum += obj[prop]);
+
 export function setupPrimaryMetricMocks(hooks, tasks = []) {
   hooks.beforeEach(function() {
     const getTrackerSpy = (this.getTrackerSpy = sinon.spy());
@@ -26,6 +29,9 @@ export function setupPrimaryMetricMocks(hooks, tasks = []) {
         return [];
       }),
       tasks,
+
+      reservedMemory: tasks.reduce(sumBy('reservedMemory'), 0),
+      reservedMemoryMax: tasks.reduce(sumBy('reservedMemoryMax'), 0),
     });
 
     const mockStatsTrackersRegistry = Service.extend({

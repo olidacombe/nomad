@@ -71,13 +71,13 @@ export default class AllocationPrimaryMetric extends Component {
   }
 
   get softLimitAnnotations() {
-    if (this.metric === 'memory' && this.allocation && (this.allocation.allocatedResources.memoryMax > this.allocation.allocatedResources.memory)) {
-      const memory = this.allocation.allocatedResources.memory;
+    if (this.metric === 'memory' && this.tracker && (this.tracker.reservedMemoryMax > this.tracker.reservedMemory)) {
+      const memory = this.tracker.reservedMemory;
 
       return [
         {
           label: `${formatScheduledBytes(memory, 'MiB')} soft limit`,
-          percent: memory / this.allocation.allocatedResources.memoryMax,
+          percent: memory / this.tracker.reservedMemoryMax,
         },
       ];
     }

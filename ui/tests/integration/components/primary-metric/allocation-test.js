@@ -6,12 +6,11 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupPrimaryMetricMocks, primaryMetric } from './primary-metric';
 import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
 import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
-import { formatScheduledBytes } from 'nomad-ui/utils/units';
 
 const mockTasks = [
-  { task: 'One', reservedCPU: 200, reservedMemory: 500, cpu: [], memory: [] },
-  { task: 'Two', reservedCPU: 100, reservedMemory: 200, cpu: [], memory: [] },
-  { task: 'Three', reservedCPU: 300, reservedMemory: 100, cpu: [], memory: [] },
+  { task: 'One', reservedCPU: 200, reservedMemory: 500, reservedMemoryMax: 600, cpu: [], memory: [] },
+  { task: 'Two', reservedCPU: 100, reservedMemory: 200, reservedMemoryMax: 300, cpu: [], memory: [] },
+  { task: 'Three', reservedCPU: 300, reservedMemory: 100, reservedMemoryMax: 200, cpu: [], memory: [] },
 ];
 
 module('Integration | Component | PrimaryMetric::Allocation', function(hooks) {
@@ -64,7 +63,7 @@ module('Integration | Component | PrimaryMetric::Allocation', function(hooks) {
     assert.equal(findAll('[data-test-chart-area]').length, mockTasks.length);
   });
 
-  test('When tasks have a hard memory limit, the soft limit shows as an annotation', async function(assert) {
+  test('The soft memory limit shows as an annotation', async function(assert) {
     await preload(this.store);
 
     const resource = findResource(this.store);
@@ -76,7 +75,7 @@ module('Integration | Component | PrimaryMetric::Allocation', function(hooks) {
       assert.ok(find('[data-test-annotation]'));
       assert.equal(
         find('[data-test-annotation]').textContent.trim(),
-        `${formatScheduledBytes(resource.allocatedResources.memory, 'MiB')} soft limit`
+        '800 MiB soft limit'
       );
     } else {
       assert.notOk(find('[data-test-annotation]'));
