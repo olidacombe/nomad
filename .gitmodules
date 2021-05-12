@@ -1,0 +1,3 @@
+[submodule "rpi_tools"]
+	path = rpi_tools
+	url = github.com:raspberrypi/tools.git
