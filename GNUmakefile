@@ -1,4 +1,5 @@
-SHELL = bash
+SHELL := /bin/bash
+PATH := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))/rpi_tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin:$(PATH)
 PROJECT_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 THIS_OS := $(shell uname | cut -d- -f1)
 THIS_ARCH := $(shell uname -m)
@@ -64,10 +65,11 @@ endif
 	@CGO_ENABLED=1 \
 		GOOS=$(firstword $(subst _, ,$*)) \
 		GOARCH=$(lastword $(subst _, ,$*)) \
+		GOARM=6 \
 		CC=$(CC) \
 		go build -trimpath -ldflags $(GO_LDFLAGS) -tags "$(GO_TAGS)" -o $(GO_OUT)
 
-pkg/linux_arm/nomad: CC = arm-linux-gnueabihf-gcc-5
+pkg/linux_arm/nomad: CC = arm-linux-gnueabihf-gcc
 pkg/linux_arm64/nomad: CC = aarch64-linux-gnu-gcc-5
 pkg/windows_%/nomad: GO_OUT = $@.exe
 
